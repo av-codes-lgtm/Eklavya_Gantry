@@ -1,0 +1,2 @@
+source /home/aryan/stepper_test/build/gdbinit/symbols
+source /home/aryan/stepper_test/build/gdbinit/connect
