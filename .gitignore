@@ -1,0 +1,10 @@
+# Ignore build directories and files
+build/
+dist/
+*.o
+*.out
+*.exe
+*.bin
+*.elf
+*.hex
+*.pyc
