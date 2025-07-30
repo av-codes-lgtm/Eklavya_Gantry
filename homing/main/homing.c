@@ -7,9 +7,9 @@
 #define STEP_PIN GPIO_NUM_22
 #define DIR_PIN  GPIO_NUM_23
 
-#define M0_PIN  GPIO_NUM_18
-#define M1_PIN  GPIO_NUM_19
-#define M2_PIN  GPIO_NUM_21
+#define M0_PIN  GPIO_NUM_19
+#define M1_PIN  GPIO_NUM_18
+#define M2_PIN  GPIO_NUM_5
 
 #define LIM_SWITCH_PIN  GPIO_NUM_15
 

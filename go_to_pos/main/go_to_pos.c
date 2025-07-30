@@ -8,9 +8,9 @@
 #define STEP_PIN GPIO_NUM_22
 #define DIR_PIN  GPIO_NUM_23
 
-#define M0_PIN  GPIO_NUM_18
-#define M1_PIN  GPIO_NUM_19
-#define M2_PIN  GPIO_NUM_21
+#define M0_PIN  GPIO_NUM_19
+#define M1_PIN  GPIO_NUM_18
+#define M2_PIN  GPIO_NUM_5
 
 #define LIM_SWITCH_PIN  GPIO_NUM_15
 
@@ -153,11 +153,11 @@ void app_main() {
         printf("\nReceived: %d\n", final_position);
 
         if (current_position<final_position){
-            int n=(final_position-current_position)*3200/(3.141592653589*7);
+            int n=(final_position-current_position)*3200/(3.141592653589*6.25);
             gpio_set_level(DIR_PIN, 0);
             step(n);
         } else {
-            int n=(current_position-final_position)*3200/(3.141592653589*7);
+            int n=(current_position-final_position)*3200/(3.141592653589*6.25);
             gpio_set_level(DIR_PIN, 1); 
             step(n);
         }
