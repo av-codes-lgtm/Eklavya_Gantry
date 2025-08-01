@@ -153,11 +153,11 @@ void app_main() {
         printf("\nReceived: %d\n", final_position);
 
         if (current_position<final_position){
-            int n=(final_position-current_position)*3200/(3.141592653589*6.25);
+            int n=(final_position-current_position)*3200/(3.141592653589*6.5);
             gpio_set_level(DIR_PIN, 0);
             step(n);
         } else {
-            int n=(current_position-final_position)*3200/(3.141592653589*6.25);
+            int n=(current_position-final_position)*3200/(3.141592653589*6.5);
             gpio_set_level(DIR_PIN, 1); 
             step(n);
         }
