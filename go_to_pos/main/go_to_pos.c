@@ -34,8 +34,8 @@ void setup_stepper_pins() {
         .intr_type = GPIO_INTR_DISABLE,
         .mode = GPIO_MODE_INPUT,
         .pin_bit_mask = (1ULL << LIM_SWITCH_PIN),
-        .pull_down_en = 1,
-        .pull_up_en = 0 // Use pull-up if switch connects to GND when pressed
+        .pull_down_en = 0,
+        .pull_up_en = 1 // Use pull-up if switch connects to GND when pressed
     };
     
     gpio_config(&io_conf_in);
@@ -64,10 +64,14 @@ void step(int no_steps) {
     int const_steps = no_steps - accel_steps - decel_steps;
     if (const_steps<0){
         const_steps=0;
+        accel_steps=no_steps/2;
+        decel_steps=accel_steps;
     }
     // Define min and max total step time (in microseconds)
     int min_step_time = 30;  // Fastest (small delay between steps)
     int max_step_time = 150; // Slowest (long delay between steps)
+
+    int total_steps=0;
 
     // Acceleration Phase
     for (int i = 0; i < accel_steps; i++) {
@@ -76,6 +80,7 @@ void step(int no_steps) {
         esp_rom_delay_us(STEP_HIGH_TIME_uS);
         gpio_set_level(STEP_PIN, 0);
         esp_rom_delay_us(step_time - STEP_HIGH_TIME_uS);
+        total_steps++;
     }
 
     // Constant Speed Phase
@@ -84,6 +89,7 @@ void step(int no_steps) {
         esp_rom_delay_us(STEP_HIGH_TIME_uS);
         gpio_set_level(STEP_PIN, 0);
         esp_rom_delay_us(min_step_time - STEP_HIGH_TIME_uS);
+        total_steps++;
     }
 
     // Deceleration Phase
@@ -93,7 +99,10 @@ void step(int no_steps) {
         esp_rom_delay_us(STEP_HIGH_TIME_uS);
         gpio_set_level(STEP_PIN, 0);
         esp_rom_delay_us(step_time - STEP_HIGH_TIME_uS);
+        total_steps++;
     }
+
+    printf("Total steps taken = %d\n" ,total_steps);
 }
 
 void single_step() {
@@ -106,10 +115,10 @@ void single_step() {
 void home() {
     gpio_set_level(DIR_PIN, 1); 
     int level1 = gpio_get_level(LIM_SWITCH_PIN);
-    while (level1 == 1) {
+    while (level1 == 0) {
         single_step();
         level1=gpio_get_level(LIM_SWITCH_PIN);
-        if (level1==0){
+        if (level1==1){
             break;
         }
     }
