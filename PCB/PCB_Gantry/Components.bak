@@ -25747,7 +25747,7 @@
 			(pin power_in line
 				(at 31.75 0 180)
 				(length 3.81)
-				(name "FREQ"
+				(name "SW"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -25765,7 +25765,7 @@
 			(pin power_in line
 				(at 31.75 -8.89 180)
 				(length 3.81)
-				(name "EN"
+				(name "FB"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -25783,7 +25783,7 @@
 			(pin power_in line
 				(at 31.75 -17.78 180)
 				(length 3.81)
-				(name "VIN"
+				(name "COMP"
 					(effects
 						(font
 							(size 1.27 1.27)

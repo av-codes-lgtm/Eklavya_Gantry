@@ -65,6 +65,14 @@
 						(color 255 255 194 1)
 					)
 				)
+				(text "MP 1584"
+					(at 16.51 -11.938 0)
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
 				(pin power_in line
 					(at 0 0 0)
 					(length 3.81)
@@ -1039,6 +1047,16 @@
 		)
 		(uuid "7738768f-dabd-4b69-a1ab-121e355a2e89")
 	)
+	(text "12V"
+		(exclude_from_sim no)
+		(at 136.398 89.408 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "9cde88c5-071e-431a-9b31-d787f71b14c1")
+	)
 	(junction
 		(at 166.37 105.41)
 		(diameter 0)
@@ -1074,12 +1092,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3869044b-844d-4b0a-acfe-5cca7ea08b62")
-	)
-	(junction
-		(at 102.87 83.82)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6fefa74b-0992-4ebe-85d0-408f4a01d41d")
 	)
 	(junction
 		(at 115.57 83.82)
@@ -1120,16 +1132,6 @@
 			(type default)
 		)
 		(uuid "08b338f5-d591-4b94-b060-a635e5d2a85d")
-	)
-	(wire
-		(pts
-			(xy 99.06 83.82) (xy 102.87 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "09d10c87-9109-40d8-aceb-cb28d10da33c")
 	)
 	(wire
 		(pts
@@ -2705,6 +2707,93 @@
 		)
 	)
 	(symbol
+		(lib_id "Components:MP1584")
+		(at 120.65 74.93 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d93de00d-b6d3-46a6-a16e-39b6d4d79815")
+		(property "Reference" "U3"
+			(at 136.525 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "~"
+			(at 136.525 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 120.65 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 120.65 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 120.65 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin ""
+			(uuid "43ca83aa-fae5-4030-863b-d76f1fdbd15a")
+		)
+		(pin ""
+			(uuid "8fbf9407-ef00-4c3d-b376-6bb554b19609")
+		)
+		(pin ""
+			(uuid "da628824-d577-4420-adc8-62d3d9e942f9")
+		)
+		(pin ""
+			(uuid "ebb0b6dd-e252-42aa-a222-d88c6326ab7c")
+		)
+		(pin ""
+			(uuid "b66223ae-ad51-46d0-a688-8474499df7f0")
+		)
+		(pin ""
+			(uuid "d52c7aad-549c-49ae-81eb-60af86a1149f")
+		)
+		(pin ""
+			(uuid "7b0bb3cc-3138-44ae-8f55-793dc81a5f54")
+		)
+		(pin ""
+			(uuid "cafaf906-f917-4923-a6ab-1cb9242a29f7")
+		)
+		(instances
+			(project "PCB_Gantry"
+				(path "/018e7a75-50fa-45c9-b89e-77e71ddfff07/615a1306-801a-41bf-8a6c-987b897a3bec"
+					(reference "U3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C_Small")
 		(at 190.5 72.39 0)
 		(unit 1)
@@ -2835,93 +2924,6 @@
 			(project "PCB_Gantry"
 				(path "/018e7a75-50fa-45c9-b89e-77e71ddfff07/615a1306-801a-41bf-8a6c-987b897a3bec"
 					(reference "#PWR020")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Components:MP1584")
-		(at 120.65 74.93 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "e7eb0975-6d45-4ead-80ad-1d579f37763c")
-		(property "Reference" "U3"
-			(at 136.525 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "~"
-			(at 136.525 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 120.65 74.93 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 120.65 74.93 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 120.65 74.93 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin ""
-			(uuid "d8d1bb5f-b531-4d14-94fb-ed9a8adb9ce7")
-		)
-		(pin ""
-			(uuid "1995c9dd-1f1f-4d08-a988-11200ac5c249")
-		)
-		(pin ""
-			(uuid "2968e7ad-2900-4f8e-90d8-3f14af3b39f7")
-		)
-		(pin ""
-			(uuid "236a7f59-51ef-4374-b34f-35ceef7f2edf")
-		)
-		(pin ""
-			(uuid "df17cdf1-d4cc-4684-b240-81d45e0c30c0")
-		)
-		(pin ""
-			(uuid "65c23c3c-0331-4caf-8022-e0d6ff3e28bf")
-		)
-		(pin ""
-			(uuid "ba4cff9f-8c23-4573-ad5a-a205243e23bd")
-		)
-		(pin ""
-			(uuid "695ef7aa-f51b-49c9-82eb-8e0e201cfe29")
-		)
-		(instances
-			(project "PCB_Gantry"
-				(path "/018e7a75-50fa-45c9-b89e-77e71ddfff07/615a1306-801a-41bf-8a6c-987b897a3bec"
-					(reference "U3")
 					(unit 1)
 				)
 			)
