@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include "esp_rom_sys.h"
 
-#define STEP_PIN GPIO_NUM_22
-#define DIR_PIN  GPIO_NUM_23
+#define STEP_PIN GPIO_NUM_14
+#define DIR_PIN  GPIO_NUM_12
 
 #define M0_PIN  GPIO_NUM_19
 #define M1_PIN  GPIO_NUM_18
