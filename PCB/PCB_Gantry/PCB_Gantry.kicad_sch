@@ -264,16 +264,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "MF" "Pololu"
+			(property "Description" "Stepper motor controler; IC: DRV8825; 1.5A; Uin mot: 8.2÷45V"
 				(at 0 0 0)
 				(effects
 					(font
@@ -283,7 +274,7 @@
 					(hide yes)
 				)
 			)
-			(property "DESCRIPTION" "Stepper motor controler; IC: DRV8825; 1.5A; Uin mot: 8.2÷45V"
+			(property "MF" "Pololu"
 				(at 0 0 0)
 				(effects
 					(font
