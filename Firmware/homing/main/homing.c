@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include "esp_rom_sys.h"
 
-#define STEP_PIN GPIO_NUM_22
-#define DIR_PIN  GPIO_NUM_23
+#define STEP_PIN GPIO_NUM_12
+#define DIR_PIN  GPIO_NUM_14
 
 #define M0_PIN  GPIO_NUM_19
 #define M1_PIN  GPIO_NUM_18
@@ -33,8 +33,8 @@ void setup_stepper_pins() {
         .intr_type = GPIO_INTR_DISABLE,
         .mode = GPIO_MODE_INPUT,
         .pin_bit_mask = (1ULL << LIM_SWITCH_PIN),
-        .pull_down_en = 1,
-        .pull_up_en = 0 // Use pull-up if switch connects to GND when pressed
+        .pull_down_en = 0,
+        .pull_up_en = 1 // Use pull-up if switch connects to GND when pressed
     };
     gpio_config(&io_conf_in);
 }
@@ -54,7 +54,7 @@ void app_main() {
     gpio_set_level(M2_PIN, 1);
 
     while (1) {
-        gpio_set_level(DIR_PIN, 1); // Adjust depending on your wiring
+        gpio_set_level(DIR_PIN, 0); // Adjust depending on your wiring
 
         int level1 = gpio_get_level(LIM_SWITCH_PIN);
         while (level1 == 1) {
