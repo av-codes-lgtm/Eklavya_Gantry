@@ -5,12 +5,13 @@
 #include <stdio.h>
 #include "esp_rom_sys.h"
 
-#define STEP_PIN GPIO_NUM_14
-#define DIR_PIN  GPIO_NUM_12
+#define STEP_PIN GPIO_NUM_12
+#define DIR_PIN  GPIO_NUM_14
 
 #define M0_PIN  GPIO_NUM_19
 #define M1_PIN  GPIO_NUM_18
 #define M2_PIN  GPIO_NUM_5
+#define PulleyRadius 6.36
 
 #define LIM_SWITCH_PIN  GPIO_NUM_15
 
@@ -113,15 +114,12 @@ void single_step() {
 }
 
 void home() {
-    gpio_set_level(DIR_PIN, 1); 
-    int level1 = gpio_get_level(LIM_SWITCH_PIN);
-    while (level1 == 0) {
-        single_step();
-        level1=gpio_get_level(LIM_SWITCH_PIN);
-        if (level1==1){
-            break;
-        }
+    gpio_set_level(DIR_PIN, 0); // Move towards switch
+    while (gpio_get_level(LIM_SWITCH_PIN) == 1) {
+        single_step(STEP_PIN);
+        //vTaskDelay(pdMS_TO_TICKS(1)); // allow FreeRTOS to switch tasks
     }
+    //vTaskDelete(NULL);
 }
 
 int uart_read_int() {
@@ -157,20 +155,23 @@ void app_main() {
 
     while (1) {
         int final_position;
-        printf("Enter position in mm: ");
+        printf("\nEnter position in mm: ");
         final_position = uart_read_int();
-        printf("\nReceived: %d\n", final_position);
-
-        if (current_position<final_position){
-            int n=(final_position-current_position)*3200/(3.141592653589*6.5);
-            gpio_set_level(DIR_PIN, 0);
-            step(n);
+        printf("\nReceived: %d ", final_position);
+        if (final_position>540){
+            printf("\neeee bhaii itna nhi jaeega mai.");
         } else {
-            int n=(current_position-final_position)*3200/(3.141592653589*6.5);
-            gpio_set_level(DIR_PIN, 1); 
-            step(n);
-        }
+            if (current_position<final_position){
+                int n=(final_position-current_position)*3200/(3.141592653589*PulleyRadius);
+                gpio_set_level(DIR_PIN, 1);
+                step(n);
+            } else {
+                int n=(current_position-final_position)*3200/(3.141592653589*PulleyRadius);
+                gpio_set_level(DIR_PIN, 0); 
+                step(n);
+            }
 
-        current_position=final_position;
+            current_position=final_position;
+        }
     }
 }
