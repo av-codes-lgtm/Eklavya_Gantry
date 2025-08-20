@@ -66,6 +66,12 @@ void home_y_task(void *pvParameters) {
     vTaskDelete(NULL);
 }
 
+void total_homing(){
+    // Create tasks for X and Y homing to run in parallel
+    xTaskCreate(home_x_task, "Home X Axis", 2048, NULL, 1, NULL);
+    xTaskCreate(home_y_task, "Home Y Axis", 2048, NULL, 1, NULL);
+}
+
 void app_main() {
     setup_stepper_pins();
 
@@ -73,7 +79,5 @@ void app_main() {
     gpio_set_level(M1_PIN, 0);
     gpio_set_level(M2_PIN, 1);
 
-    // Create tasks for X and Y homing to run in parallel
-    xTaskCreate(home_x_task, "Home X Axis", 2048, NULL, 1, NULL);
-    xTaskCreate(home_y_task, "Home Y Axis", 2048, NULL, 1, NULL);
+    total_homing();        
 }
