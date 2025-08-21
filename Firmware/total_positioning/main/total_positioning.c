@@ -5,6 +5,7 @@
 #include "esp_rom_sys.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define X_STEP_PIN GPIO_NUM_12
 #define X_DIR_PIN  GPIO_NUM_14
@@ -17,25 +18,37 @@
 
 #define X_LIM_SWITCH_PIN  GPIO_NUM_15
 #define Y_LIM_SWITCH_PIN  GPIO_NUM_13
+#define LIM_ACTIVE_LEVEL  0
 
-#define STEP_HIGH_TIME_uS 5
-#define STEP_TOTAL_TIME_uS 30
+#define STEP_PULSE_HIGH_US 5
+#define MAX_STEP_INTERVAL_US 150
+#define MIN_STEP_INTERVAL_US 30
 
-#define PulleyRadius 6.36
+#define PULLEY_RADIUS_MM 6.36
+#define STEPS_PER_REV 3200
+#define PI 6.28318530717958647692/2
+#define STEPS_PER_MM ( (double)STEPS_PER_REV / (PI * (double)PULLEY_RADIUS_MM) )
 
-int current_x_position = 0;
-int current_y_position = 0;
+#define X_MAX_MM 540
+#define Y_MAX_MM 390
 
-int final_x_position = 0;
-int final_y_position = 0;
+static volatile int current_x_mm = 0;
+static volatile int current_y_mm = 0;
 
-void setup_stepper_pins() {
+static inline void step_pulse(gpio_num_t step_pin) {
+    gpio_set_level(step_pin, 1);
+    esp_rom_delay_us(STEP_PULSE_HIGH_US);
+    gpio_set_level(step_pin, 0);
+}
+
+static void setup_stepper_pins(void) {
     gpio_config_t io_conf_out = {
         .intr_type = GPIO_INTR_DISABLE,
         .mode = GPIO_MODE_OUTPUT,
-        .pin_bit_mask = (1ULL << X_STEP_PIN) | (1ULL << X_DIR_PIN) |
-                        (1ULL << Y_STEP_PIN) | (1ULL << Y_DIR_PIN) |
-                        (1ULL << M0_PIN) | (1ULL << M1_PIN) | (1ULL << M2_PIN),
+        .pin_bit_mask =
+            (1ULL << X_STEP_PIN) | (1ULL << X_DIR_PIN) |
+            (1ULL << Y_STEP_PIN) | (1ULL << Y_DIR_PIN) |
+            (1ULL << M0_PIN) | (1ULL << M1_PIN) | (1ULL << M2_PIN),
         .pull_down_en = 0,
         .pull_up_en = 0
     };
@@ -51,7 +64,7 @@ void setup_stepper_pins() {
     gpio_config(&io_conf_in);
 }
 
-void setup_uart() {
+static void setup_uart(void) {
     const uart_config_t uart_config = {
         .baud_rate = 115200,
         .data_bits = UART_DATA_8_BITS,
@@ -64,136 +77,119 @@ void setup_uart() {
     uart_set_pin(UART_NUM_0, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
 }
 
-void step(gpio_num_t STEP_PIN,int no_steps) {
-    int accel_steps = 6400;
-    int decel_steps = accel_steps;
-    if (no_steps<accel_steps){
-        accel_steps=no_steps/2;
-        decel_steps=accel_steps;
-    }
-    int const_steps = no_steps - accel_steps - decel_steps;
-    if (const_steps<0){
-        const_steps=0;
-        accel_steps=no_steps/2;
-        decel_steps=accel_steps;
-    }
-    int min_step_time = 30;
-    int max_step_time = 150;
-
-    int total_steps=0;
-
-    for (int i = 0; i < accel_steps; i++) {
-        int step_time = max_step_time - ((max_step_time - min_step_time) * i / accel_steps);
-        gpio_set_level(STEP_PIN, 1);
-        esp_rom_delay_us(STEP_HIGH_TIME_uS);
-        gpio_set_level(STEP_PIN, 0);
-        esp_rom_delay_us(step_time - STEP_HIGH_TIME_uS);
-        total_steps++;
-    }
-
-    for (int i = 0; i < const_steps; i++) {
-        gpio_set_level(STEP_PIN, 1);
-        esp_rom_delay_us(STEP_HIGH_TIME_uS);
-        gpio_set_level(STEP_PIN, 0);
-        esp_rom_delay_us(min_step_time - STEP_HIGH_TIME_uS);
-        total_steps++;
-    }
-
-    for (int i = 0; i < decel_steps; i++) {
-        int step_time = min_step_time + ((max_step_time - min_step_time) * i / decel_steps);
-        gpio_set_level(STEP_PIN, 1);
-        esp_rom_delay_us(STEP_HIGH_TIME_uS);
-        gpio_set_level(STEP_PIN, 0);
-        esp_rom_delay_us(step_time - STEP_HIGH_TIME_uS);
-        total_steps++;
-    }
-
-    printf("Total steps taken = %d\n" ,total_steps);
-}
-
-void single_step(gpio_num_t STEP_PIN) {
-    gpio_set_level(STEP_PIN, 1);
-    esp_rom_delay_us(STEP_HIGH_TIME_uS);
-    gpio_set_level(STEP_PIN, 0);
-    esp_rom_delay_us(STEP_TOTAL_TIME_uS - STEP_HIGH_TIME_uS);
-}
-
-void home_x_task(void *pvParameters) {
-    gpio_set_level(X_DIR_PIN, 0);
-    while (gpio_get_level(X_LIM_SWITCH_PIN) == 1) {
-        single_step(X_STEP_PIN);
-        vTaskDelay(pdMS_TO_TICKS(1));
-    }
-    vTaskDelete(NULL);
-}
-
-void home_y_task(void *pvParameters) {
-    gpio_set_level(Y_DIR_PIN, 0);
-    while (gpio_get_level(Y_LIM_SWITCH_PIN) == 1) {
-        single_step(Y_STEP_PIN);
-        vTaskDelay(pdMS_TO_TICKS(1));
-    }
-    vTaskDelete(NULL);
-}
-
-void total_homing(){
-    xTaskCreate(home_x_task, "Home X Axis", 2048, NULL, 1, NULL);
-    xTaskCreate(home_y_task, "Home Y Axis", 2048, NULL, 1, NULL);
-}
-
-int uart_read_int() {
-    char input[32] = {0};
+static int uart_read_int_blocking(void) {
+    char buf[32] = {0};
     int idx = 0;
     uint8_t ch;
-
-    while (idx < sizeof(input) - 1) {
-        int len = uart_read_bytes(UART_NUM_0, &ch, 1, pdMS_TO_TICKS(10000));
+    while (idx < (int)sizeof(buf) - 1) {
+        int len = uart_read_bytes(UART_NUM_0, &ch, 1, portMAX_DELAY);
         if (len > 0) {
-            if (ch == '\n' || ch == '\r') {
-                break;
-            }
-            input[idx++] = ch;
+            if (ch == '\n' || ch == '\r') break;
+            buf[idx++] = (char)ch;
             uart_write_bytes(UART_NUM_0, (const char *)&ch, 1);
         }
     }
-    input[idx] = '\0';
-    return atoi(input);
+    buf[idx] = '\0';
+    return atoi(buf);
 }
 
-void go_to_x_pos(void *pvParameters){
-    if (current_x_position<final_x_position){
-        int n=(final_x_position-current_x_position)*3200/(3.141592653589*PulleyRadius);
-        gpio_set_level(X_DIR_PIN, 1);
-        step(X_STEP_PIN,n);
-    } else {
-        int n=(current_x_position-final_x_position)*3200/(3.141592653589*PulleyRadius);
-        gpio_set_level(X_DIR_PIN, 0); 
-        step(X_STEP_PIN,n);
+static inline int mm_to_steps(double mm) {
+    double s = mm * STEPS_PER_MM;
+    return (int)llround(s);
+}
+
+static inline int read_limit(gpio_num_t pin) {
+    return gpio_get_level(pin);
+}
+
+static void home_axis(gpio_num_t step_pin, gpio_num_t dir_pin, gpio_num_t lim_pin, int *current_mm) {
+    gpio_set_level(dir_pin, 0);
+    int guard_steps = mm_to_steps( (double)(X_MAX_MM + Y_MAX_MM) * 2.0 );
+    while (read_limit(lim_pin) != LIM_ACTIVE_LEVEL && guard_steps-- > 0) {
+        step_pulse(step_pin);
+        esp_rom_delay_us(MAX_STEP_INTERVAL_US);
     }
-    current_x_position=final_x_position;
-    vTaskDelete(NULL);
-}
-
-void go_to_y_pos(void *pvParameters){
-    if (current_y_position<final_y_position){
-        int n=(final_y_position-current_y_position)*3200/(3.141592653589*PulleyRadius);
-        gpio_set_level(Y_DIR_PIN, 1);
-        step(Y_STEP_PIN,n);
-    } else {
-        int n=(current_y_position-final_y_position)*3200/(3.141592653589*PulleyRadius);
-        gpio_set_level(Y_DIR_PIN, 0); 
-        step(Y_STEP_PIN,n);
+    vTaskDelay(pdMS_TO_TICKS(50));
+    if (read_limit(lim_pin) != LIM_ACTIVE_LEVEL) {
+        printf("\n[WARN] Homing failed on pin %d (limit not triggered)\n", (int)lim_pin);
     }
-    current_y_position=final_y_position;
-    vTaskDelete(NULL);
+    *current_mm = 0;
 }
 
-void total_positioning(){
-    xTaskCreate(go_to_x_pos, "Position X Axis", 4096, NULL, 1, NULL);
-    xTaskCreate(go_to_y_pos, "Position Y Axis", 4096, NULL, 1, NULL);
+static void home_all(void) {
+    home_axis(X_STEP_PIN, X_DIR_PIN, X_LIM_SWITCH_PIN, (int*)&current_x_mm);
+    home_axis(Y_STEP_PIN, Y_DIR_PIN, Y_LIM_SWITCH_PIN, (int*)&current_y_mm);
 }
 
-void app_main() {
+static void line_move_mm_blocking(int target_x_mm, int target_y_mm) {
+    if (target_x_mm < 0) target_x_mm = 0;
+    if (target_y_mm < 0) target_y_mm = 0;
+    if (target_x_mm > X_MAX_MM) target_x_mm = X_MAX_MM;
+    if (target_y_mm > Y_MAX_MM) target_y_mm = Y_MAX_MM;
+
+    int dx_mm = target_x_mm - current_x_mm;
+    int dy_mm = target_y_mm - current_y_mm;
+
+    int sx = (dx_mm >= 0) ? 1 : -1;
+    int sy = (dy_mm >= 0) ? 1 : -1;
+
+    int dx_steps = abs(mm_to_steps((double)dx_mm));
+    int dy_steps = abs(mm_to_steps((double)dy_mm));
+
+    if (dx_steps == 0 && dy_steps == 0) return;
+
+    gpio_set_level(X_DIR_PIN, (sx > 0) ? 1 : 0);
+    gpio_set_level(Y_DIR_PIN, (sy > 0) ? 1 : 0);
+
+    int primary = (dx_steps >= dy_steps) ? dx_steps : dy_steps;
+    int accel_steps = (int)llround(0.2 * (double)primary);
+    if (accel_steps < 1) accel_steps = (primary >= 3) ? 1 : 0;
+    int decel_steps = accel_steps;
+    int const_steps = primary - accel_steps - decel_steps;
+    if (const_steps < 0) { const_steps = 0; accel_steps = primary / 2; decel_steps = primary - accel_steps; }
+
+    int err = (dx_steps >= dy_steps) ? (dx_steps / 2) : (dy_steps / 2);
+    int x_cnt = 0, y_cnt = 0;
+
+    for (int i = 0; i < primary; i++) {
+        if (dx_steps >= dy_steps) {
+            err -= dy_steps;
+            if (err < 0) { err += dx_steps; step_pulse(Y_STEP_PIN); y_cnt++; }
+            step_pulse(X_STEP_PIN); x_cnt++;
+        } else {
+            err -= dx_steps;
+            if (err < 0) { err += dy_steps; step_pulse(X_STEP_PIN); x_cnt++; }
+            step_pulse(Y_STEP_PIN); y_cnt++;
+        }
+
+        if ((read_limit(X_LIM_SWITCH_PIN) == LIM_ACTIVE_LEVEL && sx < 0) ||
+            (read_limit(Y_LIM_SWITCH_PIN) == LIM_ACTIVE_LEVEL && sy < 0)) {
+            printf("\n[HALT] Hit limit during move.\n");
+            break;
+        }
+
+        int interval_us = MAX_STEP_INTERVAL_US;
+        if (i < accel_steps && accel_steps > 0) {
+            interval_us = MAX_STEP_INTERVAL_US - (int)((double)(MAX_STEP_INTERVAL_US - MIN_STEP_INTERVAL_US) * (double)i / (double)accel_steps);
+        } else if (i >= accel_steps + const_steps && decel_steps > 0) {
+            int di = i - (accel_steps + const_steps);
+            interval_us = MIN_STEP_INTERVAL_US + (int)((double)(MAX_STEP_INTERVAL_US - MIN_STEP_INTERVAL_US) * (double)di / (double)decel_steps);
+        } else {
+            interval_us = MIN_STEP_INTERVAL_US;
+        }
+        if (interval_us < STEP_PULSE_HIGH_US + 1) interval_us = STEP_PULSE_HIGH_US + 1;
+        esp_rom_delay_us(interval_us - STEP_PULSE_HIGH_US);
+    }
+
+    current_x_mm += sx * (int)llround((double)x_cnt / STEPS_PER_MM);
+    current_y_mm += sy * (int)llround((double)y_cnt / STEPS_PER_MM);
+    if (current_x_mm < 0) current_x_mm = 0;
+    if (current_y_mm < 0) current_y_mm = 0;
+    if (current_x_mm > X_MAX_MM) current_x_mm = X_MAX_MM;
+    if (current_y_mm > Y_MAX_MM) current_y_mm = Y_MAX_MM;
+}
+
+void app_main(void) {
     setup_stepper_pins();
     setup_uart();
 
@@ -201,24 +197,22 @@ void app_main() {
     gpio_set_level(M1_PIN, 0);
     gpio_set_level(M2_PIN, 1);
 
-    total_homing();
-    current_x_position=0;
-    current_y_position=0;
-    vTaskDelay(pdMS_TO_TICKS(2000));
-    
+    printf("\nHoming...\n");
+    home_all();
+    vTaskDelay(pdMS_TO_TICKS(200));
+
     while (1) {
-        printf("\nEnter x position in mm: ");
-        final_x_position = uart_read_int();
-        printf("\nReceived: %d ", final_x_position);
+        printf("\nEnter X (mm, 0-%d): ", X_MAX_MM);
+        int tx = uart_read_int_blocking();
+        printf("\nEnter Y (mm, 0-%d): ", Y_MAX_MM);
+        int ty = uart_read_int_blocking();
 
-        printf("\nEnter y position in mm: ");
-        final_y_position = uart_read_int();
-        printf("\nReceived: %d ", final_y_position);
-
-        if (final_x_position>540 || final_y_position>400){
-            printf("\nError: Out of bounds.");
-        } else {
-            total_positioning();
+        if (tx < 0 || ty < 0 || tx > X_MAX_MM || ty > Y_MAX_MM) {
+            printf("\nError: target out of bounds\n");
+            continue;
         }
+
+        line_move_mm_blocking(tx, ty);
+        printf("\nReached (%d, %d)\n", current_x_mm, current_y_mm);
     }
 }
