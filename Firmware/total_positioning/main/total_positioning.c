@@ -102,24 +102,43 @@ static inline int read_limit(gpio_num_t pin) {
     return gpio_get_level(pin);
 }
 
-static void home_axis(gpio_num_t step_pin, gpio_num_t dir_pin, gpio_num_t lim_pin, int *current_mm) {
-    gpio_set_level(dir_pin, 0);
-    int guard_steps = mm_to_steps( (double)(X_MAX_MM + Y_MAX_MM) * 2.0 );
-    while (read_limit(lim_pin) != LIM_ACTIVE_LEVEL && guard_steps-- > 0) {
-        step_pulse(step_pin);
-        esp_rom_delay_us(MAX_STEP_INTERVAL_US);
-    }
-    vTaskDelay(pdMS_TO_TICKS(50));
-    if (read_limit(lim_pin) != LIM_ACTIVE_LEVEL) {
-        printf("\n[WARN] Homing failed on pin %d (limit not triggered)\n", (int)lim_pin);
-    }
-    *current_mm = 0;
+/* ---------- HOMING CODE from Code1 ---------- */
+
+void single_step(gpio_num_t STEP_PIN) {
+    gpio_set_level(STEP_PIN, 1);
+    esp_rom_delay_us(STEP_PULSE_HIGH_US);
+    gpio_set_level(STEP_PIN, 0);
+    esp_rom_delay_us(MAX_STEP_INTERVAL_US - STEP_PULSE_HIGH_US);
 }
 
-static void home_all(void) {
-    home_axis(X_STEP_PIN, X_DIR_PIN, X_LIM_SWITCH_PIN, (int*)&current_x_mm);
-    home_axis(Y_STEP_PIN, Y_DIR_PIN, Y_LIM_SWITCH_PIN, (int*)&current_y_mm);
+void home_x_task(void *pvParameters) {
+    gpio_set_level(X_DIR_PIN, 0); // Move towards switch
+    while (gpio_get_level(X_LIM_SWITCH_PIN) == 1) {
+        single_step(X_STEP_PIN);
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+    current_x_mm = 0;
+    vTaskDelete(NULL);
 }
+
+void home_y_task(void *pvParameters) {
+    gpio_set_level(Y_DIR_PIN, 0); // Move towards switch
+    while (gpio_get_level(Y_LIM_SWITCH_PIN) == 1) {
+        single_step(Y_STEP_PIN);
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+    current_y_mm = 0;
+    vTaskDelete(NULL);
+}
+
+void total_homing(){
+    printf("\n[INFO] Starting homing...\n");
+    xTaskCreate(home_x_task, "Home X Axis", 2048, NULL, 1, NULL);
+    xTaskCreate(home_y_task, "Home Y Axis", 2048, NULL, 1, NULL);
+}
+
+/* ---------- END HOMING CODE ---------- */
+
 
 static void line_move_mm_blocking(int target_x_mm, int target_y_mm) {
     if (target_x_mm < 0) target_x_mm = 0;
@@ -189,7 +208,7 @@ static void line_move_mm_blocking(int target_x_mm, int target_y_mm) {
     if (current_y_mm > Y_MAX_MM) current_y_mm = Y_MAX_MM;
 }
 
-void app_main(void) {
+void app_main() {
     setup_stepper_pins();
     setup_uart();
 
@@ -198,7 +217,7 @@ void app_main(void) {
     gpio_set_level(M2_PIN, 1);
 
     printf("\nHoming...\n");
-    home_all();
+    total_homing();   // Using Code1 homing
     vTaskDelay(pdMS_TO_TICKS(200));
 
     while (1) {
