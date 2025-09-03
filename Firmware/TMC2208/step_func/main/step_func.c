@@ -1,10 +1,23 @@
-#include <stdio.h>
-#include "esp_log.h"
-#include <inttypes.h>
-#include "driver/uart.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include <stdio.h>
+#include "esp_rom_sys.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/uart.h"
+
+#define STEP_PIN GPIO_NUM_12
+#define DIR_PIN  GPIO_NUM_14
+
+#define M0_PIN  GPIO_NUM_19
+#define M1_PIN  GPIO_NUM_18
+#define M2_PIN  GPIO_NUM_5
+
+#define LIM_SWITCH_PIN  GPIO_NUM_15
+
+#define STEP_HIGH_TIME_uS 5
+#define STEP_TOTAL_TIME_uS 30
 
 #define UART_PORT UART_NUM_2
 #define TMC_TX 17
@@ -13,15 +26,6 @@
 #define REG_CHOPCONF     0x6C
 #define BUF_SIZE 128
 
-#define STEP_PIN GPIO_NUM_12
-#define DIR_PIN  GPIO_NUM_14
-#define LIM_SWITCH_PIN  GPIO_NUM_15
-
-#define STEP_HIGH_TIME_uS 5
-#define STEP_TOTAL_TIME_uS 30
-#define PulleyRadius 6.36
-
-#define PI 3.14159265358979324
 
 static const char *TAG = "TMC2208";
 static uart_port_t g_uart_num;
@@ -108,7 +112,7 @@ uint32_t tmc_read_reg(uint8_t reg) {
     if (len == 8 && resp[7] == tmc_crc(resp, 7)) {
         return (resp[3] << 24) | (resp[4] << 16) | (resp[5] << 8) | resp[6];
     }
-    ESP_LOGW(TAG, "Bad read response");
+    //ESP_LOGW(TAG, "Bad read response");
     return 0;
 }
 
@@ -130,23 +134,6 @@ void tmc_set_current(uint8_t ihold, uint8_t irun, uint8_t iholddelay) {
     tmc_write_reg(REG_IHOLD_IRUN, val);
 }
 
-void single_step() {
-    gpio_set_level(STEP_PIN, 1);
-    esp_rom_delay_us(STEP_HIGH_TIME_uS);
-    gpio_set_level(STEP_PIN, 0);
-    esp_rom_delay_us(100 - STEP_HIGH_TIME_uS);
-}
-
-void home() {
-    gpio_set_level(DIR_PIN, 0); // Move towards switch
-    while (gpio_get_level(LIM_SWITCH_PIN) == 1) {
-        single_step(STEP_PIN);
-        //vTaskDelay(pdMS_TO_TICKS(1)); // allow FreeRTOS to switch tasks
-    }
-    //vTaskDelete(NULL);
-}
-
-
 void step(int no_steps) {
     int accel_steps = 6400;
     int decel_steps = accel_steps;
@@ -157,14 +144,10 @@ void step(int no_steps) {
     int const_steps = no_steps - accel_steps - decel_steps;
     if (const_steps<0){
         const_steps=0;
-        accel_steps=no_steps/2;
-        decel_steps=accel_steps;
     }
     // Define min and max total step time (in microseconds)
     int min_step_time = 30;  // Fastest (small delay between steps)
     int max_step_time = 150; // Slowest (long delay between steps)
-
-    int total_steps=0;
 
     // Acceleration Phase
     for (int i = 0; i < accel_steps; i++) {
@@ -173,7 +156,6 @@ void step(int no_steps) {
         esp_rom_delay_us(STEP_HIGH_TIME_uS);
         gpio_set_level(STEP_PIN, 0);
         esp_rom_delay_us(step_time - STEP_HIGH_TIME_uS);
-        total_steps++;
     }
 
     // Constant Speed Phase
@@ -182,7 +164,6 @@ void step(int no_steps) {
         esp_rom_delay_us(STEP_HIGH_TIME_uS);
         gpio_set_level(STEP_PIN, 0);
         esp_rom_delay_us(min_step_time - STEP_HIGH_TIME_uS);
-        total_steps++;
     }
 
     // Deceleration Phase
@@ -192,60 +173,42 @@ void step(int no_steps) {
         esp_rom_delay_us(STEP_HIGH_TIME_uS);
         gpio_set_level(STEP_PIN, 0);
         esp_rom_delay_us(step_time - STEP_HIGH_TIME_uS);
-        total_steps++;
     }
-
-    printf("Total steps taken = %d\n" ,total_steps);
 }
 
-int uart_read_int() {
-    char input[32] = {0};
-    int idx = 0;
-    uint8_t ch;
+void single_step() {
+    gpio_set_level(STEP_PIN, 1);
+    esp_rom_delay_us(STEP_HIGH_TIME_uS);
+    gpio_set_level(STEP_PIN, 0);
+    esp_rom_delay_us(100 - STEP_HIGH_TIME_uS);
+}
 
-    while (idx < sizeof(input) - 1) {
-        int len = uart_read_bytes(UART_NUM_0, &ch, 1, pdMS_TO_TICKS(10000));
-        if (len > 0) {
-            if (ch == '\n' || ch == '\r') {
-                break;
-            }
-            input[idx++] = ch;
-            uart_write_bytes(UART_NUM_0, (const char *)&ch, 1);  // Echo back
+void home() {
+    gpio_set_level(DIR_PIN, 1); 
+    int level1 = gpio_get_level(LIM_SWITCH_PIN);
+    while (level1 == 1) {
+        single_step();
+        level1=gpio_get_level(LIM_SWITCH_PIN);
+        if (level1==0){
+            break;
         }
     }
-    input[idx] = '\0';
-    return atoi(input);
+    gpio_set_level(DIR_PIN, 0);
+    step(250);
 }
-
-void app_main(void) {
-    tmc_uart_init(UART_PORT, TMC_TX, TMC_RX);
+void app_main() {
     setup_stepper_pins();
+    tmc_uart_init(UART_PORT, TMC_TX, TMC_RX);
     tmc_set_current(8, 31, 6);
-
     home();
-    int current_position=0; 
     vTaskDelay(pdMS_TO_TICKS(1000));
+
     while (1) {
-        int final_position;
-        printf("\nEnter position in mm: ");
-        final_position = uart_read_int();
-        printf("\nReceived: %d ", final_position);
-        if (final_position>540){
-            printf("\neeee bhaii itna nhi jaeega mai.");
-        } else {
-            if (current_position<final_position){
-                int n=(final_position-current_position)*25600/(PI*PulleyRadius);
-                gpio_set_level(DIR_PIN, 1);
-                step(n);
-            } else {
-                int n=(current_position-final_position)*25600/(PI*PulleyRadius);
-                gpio_set_level(DIR_PIN, 0); 
-                step(n);
-            }
-
-            current_position=final_position;
-        }
+        gpio_set_level(DIR_PIN, 0); // Set direction (1 or 0)
+        vTaskDelay(pdMS_TO_TICKS(10)); // or use ets_delay_us(10);
+        step(12800*5/2);
+        gpio_set_level(DIR_PIN, 1); // Set direction (1 or 0)
+        vTaskDelay(pdMS_TO_TICKS(10)); // or use ets_delay_us(10);
+        step(12800*5/2);
     }
-
-
 }
