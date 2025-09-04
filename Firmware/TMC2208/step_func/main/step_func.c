@@ -7,14 +7,10 @@
 #include "freertos/task.h"
 #include "driver/uart.h"
 
-#define STEP_PIN GPIO_NUM_12
-#define DIR_PIN  GPIO_NUM_14
+#define STEP_PIN GPIO_NUM_18
+#define DIR_PIN  GPIO_NUM_19
 
-#define M0_PIN  GPIO_NUM_19
-#define M1_PIN  GPIO_NUM_18
-#define M2_PIN  GPIO_NUM_5
 
-#define LIM_SWITCH_PIN  GPIO_NUM_15
 
 #define STEP_HIGH_TIME_uS 5
 #define STEP_TOTAL_TIME_uS 30
@@ -30,6 +26,7 @@
 static const char *TAG = "TMC2208";
 static uart_port_t g_uart_num;
 
+// --- recommended uart init ---
 void tmc_uart_init(uart_port_t uart_num, int tx_pin, int rx_pin) {
     g_uart_num = uart_num;
     const uart_config_t uart_config = {
@@ -39,9 +36,19 @@ void tmc_uart_init(uart_port_t uart_num, int tx_pin, int rx_pin) {
         .stop_bits = UART_STOP_BITS_1,
         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
     };
-    uart_driver_install(uart_num, BUF_SIZE, BUF_SIZE, 0, NULL, 0);
+
+    // 1) param config
     uart_param_config(uart_num, &uart_config);
+
+    // 2) set pins (for half-duplex, tx_pin and rx_pin can be same or wired together)
     uart_set_pin(uart_num, tx_pin, rx_pin, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+
+    // 3) install driver: RX buffer (TX buffer not required)
+    // Make RX buffer reasonably large; 256-1024 is typical for command/response
+    uart_driver_install(uart_num, BUF_SIZE * 4, 0, 0, NULL, 0);
+
+    // 4) enable RS485 half-duplex mode for single-wire TMC
+    uart_set_mode(uart_num, UART_MODE_RS485_HALF_DUPLEX);
 }
 
 void setup_stepper_pins() {
@@ -55,17 +62,6 @@ void setup_stepper_pins() {
         .pull_up_en = 0
     };
     gpio_config(&io_conf_out);
-
-    // Configure limit switch input pin with pull-up
-    gpio_config_t io_conf_in = {
-        .intr_type = GPIO_INTR_DISABLE,
-        .mode = GPIO_MODE_INPUT,
-        .pin_bit_mask = (1ULL << LIM_SWITCH_PIN),
-        .pull_down_en = 0,
-        .pull_up_en = 1 // Use pull-up if switch connects to GND when pressed
-    };
-    
-    gpio_config(&io_conf_in);
 
 
 }
@@ -128,14 +124,17 @@ void tmc_set_microstepping() {
     tmc_write_reg(REG_CHOPCONF, chopconf);
 }
 
-// Set current (hold, run, delay)
+// --- fix current packing: iholddelay is 4 bits ---
 void tmc_set_current(uint8_t ihold, uint8_t irun, uint8_t iholddelay) {
-    uint32_t val = (ihold & 0x1F) | ((irun & 0x1F) << 8) | ((iholddelay & 0x1F) << 16);
+    uint32_t val =
+        ((uint32_t)(ihold      & 0x1F)      ) |
+        ((uint32_t)(irun       & 0x1F) <<  8) |
+        ((uint32_t)(iholddelay & 0x0F) << 16);  // 0x0F here
     tmc_write_reg(REG_IHOLD_IRUN, val);
 }
 
 void step(int no_steps) {
-    int accel_steps = 6400;
+    int accel_steps = 200*256;
     int decel_steps = accel_steps;
     if (no_steps<accel_steps){
         accel_steps=no_steps/2;
@@ -146,7 +145,7 @@ void step(int no_steps) {
         const_steps=0;
     }
     // Define min and max total step time (in microseconds)
-    int min_step_time = 30;  // Fastest (small delay between steps)
+    int min_step_time = 100;  // Fastest (small delay between steps)
     int max_step_time = 150; // Slowest (long delay between steps)
 
     // Acceleration Phase
@@ -175,40 +174,20 @@ void step(int no_steps) {
         esp_rom_delay_us(step_time - STEP_HIGH_TIME_uS);
     }
 }
-
-void single_step() {
-    gpio_set_level(STEP_PIN, 1);
-    esp_rom_delay_us(STEP_HIGH_TIME_uS);
-    gpio_set_level(STEP_PIN, 0);
-    esp_rom_delay_us(100 - STEP_HIGH_TIME_uS);
-}
-
-void home() {
-    gpio_set_level(DIR_PIN, 1); 
-    int level1 = gpio_get_level(LIM_SWITCH_PIN);
-    while (level1 == 1) {
-        single_step();
-        level1=gpio_get_level(LIM_SWITCH_PIN);
-        if (level1==0){
-            break;
-        }
-    }
-    gpio_set_level(DIR_PIN, 0);
-    step(250);
-}
 void app_main() {
     setup_stepper_pins();
     tmc_uart_init(UART_PORT, TMC_TX, TMC_RX);
+    tmc_set_microstepping(); 
     tmc_set_current(8, 31, 6);
-    home();
+    // home();
     vTaskDelay(pdMS_TO_TICKS(1000));
 
     while (1) {
         gpio_set_level(DIR_PIN, 0); // Set direction (1 or 0)
         vTaskDelay(pdMS_TO_TICKS(10)); // or use ets_delay_us(10);
-        step(12800*5/2);
+        step(51200*2);
         gpio_set_level(DIR_PIN, 1); // Set direction (1 or 0)
         vTaskDelay(pdMS_TO_TICKS(10)); // or use ets_delay_us(10);
-        step(12800*5/2);
+        step(51200*2);
     }
 }
