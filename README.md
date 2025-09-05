@@ -1,6 +1,8 @@
 # **ScrewTron: Automated Gantry-Based Screwing System**
 
 ![whole assembly_withouttoolhead](media/gantry_cadmodel.png)
+
+
 ![Toolhead 3d files](media/toolhead.png)
 
 
@@ -48,7 +50,7 @@ These instructions will help you set up ScrewTron on your local machine for deve
 Hardware requirements:
 - ESP32 development board
 - DRV8825 stepper motor drivers (3x for X, Y, Z axes)
-- Stepper motors (3x for gantry movement)
+- Nema 17 Stepper motors (3x for gantry movement)
 - Power supply (appropriate voltage/current for your stepper motors)
 - Mechanical components (rails, belts, pulleys, frame, etc)
 
@@ -85,7 +87,7 @@ idf.py build flash monitor
 
 * **[ESP32](https://www.espressif.com/en/products/socs/esp32)** - Main microcontroller with WiFi/Bluetooth capability
 * **[DRV8825 Stepper Drivers](https://www.pololu.com/product/2133)** - High-performance microstepping motor drivers
-* **Stepper Motors** - Precision motors for X, Y, Z axis control
+* Nema 17 **Stepper Motors** - Precision motors for X, Y, Z axis control
 * **Custom PCB** - Integrated control and driver circuitry (under development)
 
 ### Repository Structure
