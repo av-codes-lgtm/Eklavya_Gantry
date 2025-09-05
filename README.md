@@ -3,7 +3,10 @@
 |![whole assembly_withouttoolhead](media/gantry_cadmodel.png)|![Toolhead 3d files](media/toolhead.png)|
 :-------------------------:|:-------------------------:|
 
-![toolhead_operation](toolheadgif.gif)
+<p align="center">
+  <img src="media/toolheadgif.gif" width=70% height=70%>
+</p>
+
 An advanced automated gantry system designed for precision screwing and unscrewing of miniature screws on delicate LED panels with sub-millimeter accuracy and high-speed operation.
 
 [CAD MODEL](https://cad.onshape.com/documents/f8e877963d969bd52a009480/w/ae625ac84bd115da8b87aa91/e/6dbc831cc6b275fe37f96716) (Our CAD files)
