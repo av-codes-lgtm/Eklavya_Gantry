@@ -133,24 +133,12 @@ Eklavya_Gantry
 - Fine tuning the screw in and screw out processes to achieve industry grade quality screwing.
 - Add a screw feeding system for the "screwing in" process.
 - Creating a UI (Either WebPortal or build in software controlled using Raspberry Pi and a small screen) to make operation of the system simpler.
-
-## Contributing
-
-We welcome contributions to improve ScrewTron's capabilities and reliability.
-
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit your changes** (`git commit -m 'Add some AmazingFeature'`)
-4. **Push to the branch** (`git push origin feature/AmazingFeature`)
-5. **Open a Pull Request**
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and development process.
 ## Authors
 *  *Firmware and Hardware setup*- [Aryan_Vyapari](https://github.com/av-codes-lgtm)
 *  *PCB Design and tool-head operation* - [Sravaarth_Narang](https://github.com/SarvaarthN)
 *  *Firmware and Hardware setup* - [Pushkar_Dube](https://github.com/pushkardube)  
 
-See the list of [contributors](https://github.com/yourusername/screwtron/contributors) who participated in this project.
+See the list of [contributors](https://github.com/av-codes-lgtm/Eklavya_Gantry/graphs/contributors) who participated in this project.
 ## Acknowledgments
 
 * Thanks to the ESP-IDF, KiCad and Onshape community for excellent development tools
