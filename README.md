@@ -1,9 +1,6 @@
 # **ScrewTron: Automated Gantry-Based Screwing System**
 
-![whole assembly_withouttoolhead](media/gantry_cadmodel.png)
-
-
-![Toolhead 3d files](media/toolhead.png)
+|![whole assembly_withouttoolhead](media/gantry_cadmodel.png)|![Toolhead 3d files](media/toolhead.png)|
 
 An advanced automated gantry system designed for precision screwing and unscrewing of miniature screws on delicate LED panels with sub-millimeter accuracy and high-speed operation.
 
