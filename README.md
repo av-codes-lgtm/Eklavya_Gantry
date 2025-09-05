@@ -4,7 +4,7 @@
 :-------------------------:|:-------------------------:|
 
 <p align="center">
-  <img src="media/toolheadgif.gif" width=70% height=70%>
+  <img src="media/toolheadgif.gif" width=50% height=50%>
 </p>
 
 An advanced automated gantry system designed for precision screwing and unscrewing of miniature screws on delicate LED panels with sub-millimeter accuracy and high-speed operation.
