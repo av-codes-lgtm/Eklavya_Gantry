@@ -1,4 +1,0 @@
-(sym_lib_table
-  (version 7)
-  (lib (name "drv")(type "KiCad")(uri "${KIPRJMOD}/drv.kicad_sym")(options "")(descr ""))
-)

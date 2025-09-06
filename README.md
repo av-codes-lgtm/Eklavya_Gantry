@@ -111,7 +111,7 @@ Eklavya_Gantry
 │   .
 │   .
 │   └── STL files for 3D Printed parts
-├── pcb2/
+├── PCB/
 |   .
 |   .
 |   └── KiCad Files for PCB

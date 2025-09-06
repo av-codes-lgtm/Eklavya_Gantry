@@ -1,4 +1,4 @@
-25595825291543738
+25604603912750536
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -68193,6 +68193,41 @@ module pcb
 0
 7
 7
+Modules
+DRV8825
+
+
+0
+16
+8
+Modules
+DRV8825Module
+Through hole straight pin header, 1x08, 1.00mm pitch, single row
+Through hole pin header THT 1x08 1.00mm single row
+0
+16
+16
+Modules
+ESP32 30 pin
+Through hole straight pin header, 1x15, 2.54mm pitch, single row
+Through hole pin header THT 1x15 2.54mm single row
+0
+30
+15
+Modules
+Untitled
+
+
+0
+0
+0
+Modules
+Untitled_1
+
+
+0
+16
+8
 Motors
 Vybronics_VZ30C1T8219732L
 Vibration motor, 2.3-3.2V, 14000rpm, 0.7G, https://www.vybronics.com/wp-content/uploads/datasheet-files/Vybronics-VZ30C1T8219732L-datasheet.pdf
