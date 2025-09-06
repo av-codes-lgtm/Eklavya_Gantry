@@ -6,14 +6,13 @@
    - [LED Panel Configuration](#led-panel-configuration)
    - [Critical Requirements](#critical-requirements)
 3. [Features](#features)
-4. [How we made the ScrewTron](#how-we-made-the-screwtron)
-   - [Prerequisites](#prerequisites)
-   - [Repository Structure](#repository-structure)
-   - [Installing](#installing)
-5. [Hardware Architecture](#hardware-architecture)
-6. [Future Goals](#future-goals)
-7. [Authors](#authors)
-8. [Acknowledgments](#acknowledgments)
+4. [Prerequisites](#prerequisites)
+5. [Repository Structure](#repository-structure)
+6. [Installing](#installing)
+7. [Hardware Architecture](#hardware-architecture)
+8. [Future Goals](#future-goals)
+9. [Authors](#authors)
+10. [Acknowledgments](#acknowledgments)
 
 ---
 
