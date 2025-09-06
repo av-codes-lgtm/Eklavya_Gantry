@@ -1,6 +1,6 @@
 # Gantry CNC Motion Control
 
-This repository contains firmware and test programs for a **3-axis gantry-style CNC machine**, supporting multiple stepper motor drivers (DRV8825 and TMC2208).  
+This repository contains firmware and test programs for a **3-axis gantry-style screwing machine**, supporting multiple stepper motor drivers (DRV8825 and TMC2208).  
 The codebase is organized into modules for motion control, homing, positioning, and testing.
 
 ---
@@ -17,8 +17,8 @@ The codebase is organized into modules for motion control, homing, positioning, 
 - **TMC2208/**  
   Codebase for the gantry using the **TMC2208 stepper driver**.
 
-- **Screwdriver/Screw/**  
-  Additional implementation for screw-driven actuators.
+- **Screwdriver/**  
+  Code for screwdriver(geared DC motor).
 ---
 ### Inside `DRV8825/`
 
@@ -69,5 +69,11 @@ This folder contains code specific to the **TMC2208 stepper driver**:
   Basic testing for stepper stepping functions.
    
 - **uart/**
-  UART codes for TMC2208.  
+  UART codes for TMC2208.
+---
+### Inside `Screwdriver/`
+
+- **Screw/**  
+  Contains code for operating a **geared DC motor** (screwdriver mechanism), separate from the stepper-driven gantry system.
+
 
