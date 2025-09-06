@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include "esp_rom_sys.h"
 
-#define STEP_PIN GPIO_NUM_12
-#define DIR_PIN  GPIO_NUM_14
+#define STEP_PIN GPIO_NUM_26
+#define DIR_PIN  GPIO_NUM_25
 
 #define M0_PIN  GPIO_NUM_19
 #define M1_PIN  GPIO_NUM_18
@@ -108,15 +108,16 @@ void app_main() {
     gpio_set_level(M1_PIN, 0);
     gpio_set_level(M2_PIN, 1); // 1/32 microstepping.
 
-    home();
+    //home();
     vTaskDelay(pdMS_TO_TICKS(1000));
 
     while (1) {
         gpio_set_level(DIR_PIN, 0); // Set direction (1 or 0)
-        vTaskDelay(pdMS_TO_TICKS(10)); // or use ets_delay_us(10);
-        step(12800*5/2);
+        vTaskDelay(pdMS_TO_TICKS(20)); // or use ets_delay_us(10);
+        step(6400*4);
+        vTaskDelay(pdMS_TO_TICKS(20));
         gpio_set_level(DIR_PIN, 1); // Set direction (1 or 0)
-        vTaskDelay(pdMS_TO_TICKS(10)); // or use ets_delay_us(10);
-        step(12800*5/2);
+        vTaskDelay(pdMS_TO_TICKS(20)); // or use ets_delay_us(10);
+        step(6400*4);
     }
 }

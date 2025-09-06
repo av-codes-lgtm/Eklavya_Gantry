@@ -3,9 +3,9 @@
 #include "freertos/task.h"
 #include "driver/gpio.h"
 
-#define EnablePIN GPIO_NUM_18
-#define PIN1 GPIO_NUM_19
-#define PIN2 GPIO_NUM_21
+#define EnablePIN GPIO_NUM_4
+#define PIN1 GPIO_NUM_16
+#define PIN2 GPIO_NUM_17
 
 void app_main(void)
 {
