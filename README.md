@@ -1,5 +1,22 @@
 # **ScrewTron: Automated Gantry-Based Screwing System**
 
+## Table of Contents
+1. [Problem Statement](#problem-statement)
+2. [Our Solution](#our-solution)
+   - [LED Panel Configuration](#led-panel-configuration)
+   - [Critical Requirements](#critical-requirements)
+3. [Features](#features)
+4. [How we made the ScrewTron](#how-we-made-the-screwtron)
+   - [Prerequisites](#prerequisites)
+   - [Repository Structure](#repository-structure)
+   - [Installing](#installing)
+5. [Hardware Architecture](#hardware-architecture)
+6. [Future Goals](#future-goals)
+7. [Authors](#authors)
+8. [Acknowledgments](#acknowledgments)
+
+---
+
 |![whole assembly_withouttoolhead](media/gantry_cadmodel.png)|![Toolhead 3d files](media/toolhead.png)|
 :-------------------------:|:-------------------------:|
 
@@ -118,7 +135,7 @@ cd Eklavya_Gantry
 
 2. **Build and flash firmware**
 
-Go to the folder which code you want to flash to the esp using 
+Go to the folder with the code you want to flash to the esp using 
 
 ```bash
 cd /Eklavya_Gantry/Firmware/folder-of-your-choice
@@ -132,10 +149,12 @@ idf.py build flash monitor
 
 ## Hardware Architecture
 
-* **[ESP32](https://www.espressif.com/en/products/socs/esp32)** - Main microcontroller with WiFi/Bluetooth capability
-* **[DRV8825 Stepper Drivers](https://www.pololu.com/product/2133)** - High-performance microstepping motor drivers
-* Nema 17 **Stepper Motors** - Precision motors for X, Y, Z axis control
-* **Custom PCB** - Integrated control and driver circuitry (under development)
+| Component | Description |
+|-----------|-------------|
+| [ESP32](https://www.espressif.com/en/products/socs/esp32) | Main microcontroller with WiFi/Bluetooth capability |
+| [DRV8825 Stepper Drivers](https://www.pololu.com/product/2133) | High-performance microstepping motor drivers |
+| Nema 17 Stepper Motors | Precision motors for X, Y, Z axis control |
+| Custom PCB | Integrated control and driver circuitry (under development) |
 
 ## Future Goals
 - Shift to TMC2208 stepper drivers for better current handling and power distribution. DRV8825 does not work for prolonged time periods.
