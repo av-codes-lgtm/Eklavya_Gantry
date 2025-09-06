@@ -153,7 +153,7 @@ See the list of [contributors](https://github.com/av-codes-lgtm/Eklavya_Gantry/g
 
 * Thanks to the ESP-IDF, KiCad and Onshape community for excellent development tools
 * Inspiration from industrial automation and precision manufacturing
-- Our own [SRA-VJTI](https://github.com/sra-vjti)  
+- Thanks to our Robotics Club [SRA-VJTI](https://github.com/sra-vjti)  
 * Special thanks to our senior mentors [Amey_Tikhe](https://github.com/AmeyaTikhe)  &  [Varun_Nigudkar](https://github.com/fluffysunfish?tab=overview&from=2024-12-01&to=2024-12-31)  
 
 ---
