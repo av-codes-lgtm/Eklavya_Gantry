@@ -62,8 +62,6 @@ Given the proximity to sensitive circuitry, the system must ensure:
 - **High-speed operation** (<5 seconds per screw)
 - **Automated screw orientation** ensuring correct placement
 
-## How we made the ScrewTron
-
 ### Prerequisites
 
 Hardware requirements:
