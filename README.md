@@ -161,7 +161,7 @@ idf.py build flash monitor
 - Creating a UI (Either WebPortal or build in software controlled using Raspberry Pi and a small screen) to make operation of the system simpler.
 ## Authors
 *  *Firmware and Hardware setup*- [Aryan_Vyapari](https://github.com/av-codes-lgtm)
-*  *PCB Design and tool-head operation* - [Sravaarth_Narang](https://github.com/SarvaarthN)
+*  *PCB Design and tool-head operation* - [Sarvaarth_Narang](https://github.com/SarvaarthN)
 *  *Firmware and Hardware setup* - [Pushkar_Dube](https://github.com/pushkardube)  
 
 See the list of [contributors](https://github.com/av-codes-lgtm/Eklavya_Gantry/graphs/contributors) who participated in this project.
