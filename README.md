@@ -4,7 +4,7 @@
 :-------------------------:|:-------------------------:|
 
 <p align="center">
-  <img src="media/toolheadgif.gif" width=50% height=50%>
+  <img src="https://github.com/Ojasp21/Micromouse/blob/dev1/assets/micromouse%20assembly.gif" width=70% height=70%>
 </p>
 
 An advanced automated gantry system designed for precision screwing and unscrewing of miniature screws on delicate LED panels with sub-millimeter accuracy and high-speed operation.
@@ -153,8 +153,8 @@ See the list of [contributors](https://github.com/av-codes-lgtm/Eklavya_Gantry/g
 
 * Thanks to the ESP-IDF, KiCad and Onshape community for excellent development tools
 * Inspiration from industrial automation and precision manufacturing
-- Our own [SRA-VJTI](https://github.com/sra-vjti)  
-* Special thanks to our senior mentors [Ameya_Tikhe](https://github.com/AmeyaTikhe)  &  [Varun_Nigudkar](https://github.com/fluffysunfish?tab=overview&from=2024-12-01&to=2024-12-31)  
+- Thanks to our robotics club [SRA-VJTI](https://github.com/sra-vjti)  
+* Special thanks to our senior mentors [Amey_Tikhe](https://github.com/AmeyaTikhe)  &  [Varun_Nigudkar](https://github.com/fluffysunfish?tab=overview&from=2024-12-01&to=2024-12-31)  
 
 ---
 
