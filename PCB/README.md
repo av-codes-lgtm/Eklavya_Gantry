@@ -1,7 +1,7 @@
 # DRV8825 Stepper Motor Driver with ESP32 and Limit Switch
 
 This project demonstrates how to control a stepper motor using an **ESP32**, a **DRV8825 motor driver**, and a **limit switch** for homing or safety purposes. 
-![DRV8825 Motor Driver](DRV8825.jpeg)
+![DRV8825 Motor Driver](DRV8825.jpg)
 ---
 
 ## Circuit Description
@@ -35,7 +35,7 @@ A **limit switch** is added to detect the end position or provide a safe stop.
 
 ---
 
-![PCB Schematic](schematic.png) 
+![PCB Schematic](Schematic.png) 
 
 ## Circuit Diagram
 
