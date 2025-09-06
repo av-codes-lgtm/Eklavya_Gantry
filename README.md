@@ -1,4 +1,10 @@
 # **ScrewTron: Automated Gantry-Based Screwing System**
+|![whole assembly_withouttoolhead](media/gantry_cadmodel.png)|![Toolhead 3d files](media/toolhead.png)|
+:-------------------------:|:-------------------------:|
+
+<p align="center">
+  <img src="media/toolheadgif.gif" width=50% height=50%>
+</p>
 
 ## Table of Contents
 1. [Problem Statement](#problem-statement)
@@ -16,12 +22,6 @@
 
 ---
 
-|![whole assembly_withouttoolhead](media/gantry_cadmodel.png)|![Toolhead 3d files](media/toolhead.png)|
-:-------------------------:|:-------------------------:|
-
-<p align="center">
-  <img src="media/toolheadgif.gif" width=50% height=50%>
-</p>
 
 ## Problem Statement
 
