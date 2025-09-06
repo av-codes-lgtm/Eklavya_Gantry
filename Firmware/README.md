@@ -19,7 +19,7 @@ The codebase is organized into modules for motion control, homing, positioning, 
 
 - **Screwdriver/Screw/**  
   Additional implementation for screw-driven actuators.
-
+---
 ### Inside `DRV8825/`
 
 Each driver folder contains multiple subfolders for different functionalities:
@@ -58,3 +58,16 @@ Each driver folder contains multiple subfolders for different functionalities:
   Executes Homing in all axes of the gantry simultaneously
 
 ---
+### Inside `TMC2208/`
+
+This folder contains code specific to the **TMC2208 stepper driver**:
+
+- **Go_to_pos/**
+  Moves the gantry to a specified position.
+    
+- **step_func/**
+  Basic testing for stepper stepping functions.
+   
+- **uart/**
+  UART codes for TMC2208.  
+
