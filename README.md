@@ -7,13 +7,15 @@
   <img src="https://github.com/Ojasp21/Micromouse/blob/dev1/assets/micromouse%20assembly.gif" width=70% height=70%>
 </p>
 
-An advanced automated gantry system designed for precision screwing and unscrewing of miniature screws on delicate LED panels with sub-millimeter accuracy and high-speed operation.
-
-[CAD MODEL](https://cad.onshape.com/documents/f8e877963d969bd52a009480/w/ae625ac84bd115da8b87aa91/e/6dbc831cc6b275fe37f96716) (Our CAD files)
-
 ## Problem Statement
 
 **ScrewTron** addresses the challenge of automating the precise handling of **~280 miniature screws (1 mm size)** on sensitive LED panels. The system must operate with extreme precision around delicate circuitry while maintaining high-speed performance.
+
+## Our Soultion
+
+An advanced automated gantry system designed for precision screwing and unscrewing of miniature screws on delicate LED panels with sub-millimeter accuracy and high-speed operation.
+
+[CAD MODEL](https://cad.onshape.com/documents/f8e877963d969bd52a009480/w/ae625ac84bd115da8b87aa91/e/6dbc831cc6b275fe37f96716) (Our CAD files)
 
 ### LED Panel Configuration
 
@@ -43,9 +45,7 @@ Given the proximity to sensitive circuitry, the system must ensure:
 - **High-speed operation** (<5 seconds per screw)
 - **Automated screw orientation** ensuring correct placement
 
-## Getting Started
-
-How we made the ScrewTron.
+## How we made the ScrewTron
 
 ### Prerequisites
 
@@ -61,36 +61,6 @@ Software used:
 - [KiCad](https://www.kicad.org/) (for PCB modifications)
 - [Onshape](https://www.onshape.com/) (for Mechanical Design)
 - Git for version control.
-### Installing
-
-Step-by-step setup process:
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/av-codes-lgtm/Eklavya_Gantry.git
-cd Eklavya_Gantry
-```
-
-2. **Build and flash firmware**
-
-Go to the folder which code you want to flash to the esp using 
-
-```bash
-cd /Eklavya_Gantry/Firmware/folder-of-your-choice
-```
-
-and then run the following code
-
-```bash
-idf.py build flash monitor
-```
-
-## Hardware Architecture
-
-* **[ESP32](https://www.espressif.com/en/products/socs/esp32)** - Main microcontroller with WiFi/Bluetooth capability
-* **[DRV8825 Stepper Drivers](https://www.pololu.com/product/2133)** - High-performance microstepping motor drivers
-* Nema 17 **Stepper Motors** - Precision motors for X, Y, Z axis control
-* **Custom PCB** - Integrated control and driver circuitry (under development)
 
 ### Repository Structure
 
@@ -131,11 +101,41 @@ Eklavya_Gantry
 ├── pcb2/
 |   .
 |   .
-|   .
 |   └── KiCad Files for PCB
 └── README.md
 
 ```
+
+### Installing
+
+Step-by-step setup process:
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/av-codes-lgtm/Eklavya_Gantry.git
+cd Eklavya_Gantry
+```
+
+2. **Build and flash firmware**
+
+Go to the folder which code you want to flash to the esp using 
+
+```bash
+cd /Eklavya_Gantry/Firmware/folder-of-your-choice
+```
+
+and then run the following code
+
+```bash
+idf.py build flash monitor
+```
+
+## Hardware Architecture
+
+* **[ESP32](https://www.espressif.com/en/products/socs/esp32)** - Main microcontroller with WiFi/Bluetooth capability
+* **[DRV8825 Stepper Drivers](https://www.pololu.com/product/2133)** - High-performance microstepping motor drivers
+* Nema 17 **Stepper Motors** - Precision motors for X, Y, Z axis control
+* **Custom PCB** - Integrated control and driver circuitry (under development)
 
 ## Future Goals
 - Shift to TMC2208 stepper drivers for better current handling and power distribution. DRV8825 does not work for prolonged time periods.
