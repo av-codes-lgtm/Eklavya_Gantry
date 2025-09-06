@@ -4,7 +4,7 @@
 :-------------------------:|:-------------------------:|
 
 <p align="center">
-  <img src="https://github.com/Ojasp21/Micromouse/blob/dev1/assets/micromouse%20assembly.gif" width=70% height=70%>
+  <img src="media/toolheadgif.gif" width=50% height=50%>
 </p>
 
 ## Problem Statement
@@ -153,7 +153,7 @@ See the list of [contributors](https://github.com/av-codes-lgtm/Eklavya_Gantry/g
 
 * Thanks to the ESP-IDF, KiCad and Onshape community for excellent development tools
 * Inspiration from industrial automation and precision manufacturing
-- Thanks to our robotics club [SRA-VJTI](https://github.com/sra-vjti)  
+- Our own [SRA-VJTI](https://github.com/sra-vjti)  
 * Special thanks to our senior mentors [Amey_Tikhe](https://github.com/AmeyaTikhe)  &  [Varun_Nigudkar](https://github.com/fluffysunfish?tab=overview&from=2024-12-01&to=2024-12-31)  
 
 ---
