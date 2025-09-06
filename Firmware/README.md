@@ -1,4 +1,4 @@
-# Gantry CNC Motion Control
+# Gantry Motion Control
 
 This repository contains firmware and test programs for a **3-axis gantry-style screwing machine**, supporting multiple stepper motor drivers (DRV8825 and TMC2208).  
 The codebase is organized into modules for motion control, homing, positioning, and testing.
