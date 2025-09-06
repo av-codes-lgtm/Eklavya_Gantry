@@ -100,8 +100,9 @@ Eklavya_Gantry
 │   └── Project Proposal_ ScrewTron.docx
 ├── Firmware/
 │   ├── DRV8825/                   #Code for Running the system on DRV8825   
+│   │   ├── circle/
 │   │   ├── Double_axes/
-│   │   ├── Double_axes/
+│   │   ├── final/
 │   │   ├── go_to_pos/
 │   │   ├── homing/
 │   │   ├── limit/
@@ -153,7 +154,7 @@ See the list of [contributors](https://github.com/av-codes-lgtm/Eklavya_Gantry/g
 * Thanks to the ESP-IDF, KiCad and Onshape community for excellent development tools
 * Inspiration from industrial automation and precision manufacturing
 - Our own [SRA-VJTI](https://github.com/sra-vjti)  
-* Special thanks to our senior mentors [Amey_Tikhe](https://github.com/AmeyaTikhe)  &  [Varun_Nigudkar](https://github.com/fluffysunfish?tab=overview&from=2024-12-01&to=2024-12-31)  
+* Special thanks to our senior mentors [Ameya_Tikhe](https://github.com/AmeyaTikhe)  &  [Varun_Nigudkar](https://github.com/fluffysunfish?tab=overview&from=2024-12-01&to=2024-12-31)  
 
 ---
 
