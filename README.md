@@ -81,7 +81,6 @@ Software used:
 ```
 Eklavya_Gantry
 ├── Docs/
-│   └── Project Proposal_ ScrewTron.docx
 ├── Firmware/
 │   ├── DRV8825/                   #Code for Running the system on DRV8825   
 │   │   ├── circle/
@@ -158,6 +157,7 @@ idf.py build flash monitor
 - Finalising the circuitry and shifting completely to PCB.
 - Fine tuning the screw in and screw out processes to achieve industry grade quality screwing.
 - Add a screw feeding system for the "screwing in" process.
+- Creating a feedback mechanism to verify Screwing and unscrewing
 - Creating a UI (Either WebPortal or build in software controlled using Raspberry Pi and a small screen) to make operation of the system simpler.
 ## Authors
 *  *Firmware and Hardware setup*- [Aryan_Vyapari](https://github.com/av-codes-lgtm)
