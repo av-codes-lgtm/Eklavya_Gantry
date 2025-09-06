@@ -35,6 +35,8 @@ A **limit switch** is added to detect the end position or provide a safe stop.
 
 ---
 
+![PCB Schematic](schematic.png) 
+
 ## Circuit Diagram
 
 ```plaintext
@@ -51,4 +53,5 @@ ESP32   GND - | GND               |
 
 Limit Switch:
   GPIO 23 ---/ ---- GND
-![PCB Schematic](schematic.png) 
+
+
