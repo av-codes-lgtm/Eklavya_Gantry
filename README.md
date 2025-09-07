@@ -27,7 +27,7 @@
 
 **GantryMate-200** addresses the challenge of automating the precise handling of **~280 miniature screws (1 mm size)** on sensitive LED panels. The system must operate with extreme precision around delicate circuitry while maintaining high-speed performance.
 
-## Our Soultion
+## Our Solution
 
 An advanced automated gantry system designed for precision screwing and unscrewing of miniature screws on delicate LED panels with sub-millimeter accuracy and high-speed operation.
 
