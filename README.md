@@ -54,12 +54,11 @@ Given the proximity to sensitive circuitry, the system must ensure:
 
 ## Features
 
-- **High-precision 3-axis gantry system** (X, Y, Z axes)
+- **High precision 3-axis gantry system** (X, Y, Z axes)
 - **Specialized toolhead** with automated screw feeding mechanism
-- **Sub-millimeter positioning accuracy**
-- **Integrated safety systems** for delicate component protection
-- **High-speed operation** (<5 seconds per screw)
-- **Automated screw orientation** ensuring correct placement
+- **Sub-millimeter(0.05mm resolution) positioning accuracy**
+- **High-speed operation** (<5 seconds per screw to be achieved)
+- **Automated screw orientation** ensuring correct placement(to be achieved)
 
 ### Prerequisites
 
