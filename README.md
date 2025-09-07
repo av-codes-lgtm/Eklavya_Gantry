@@ -1,4 +1,4 @@
-# **ScrewTron: Automated Gantry-Based Screwing System**
+# **GantryMate-200: Automated Gantry-Based Screwing System**
 |![whole assembly_withouttoolhead](media/gantry_cadmodel.png)|![Toolhead 3d files](media/toolhead.png)|
 :-------------------------:|:-------------------------:|
 
@@ -25,7 +25,7 @@
 
 ## Problem Statement
 
-**ScrewTron** addresses the challenge of automating the precise handling of **~280 miniature screws (1 mm size)** on sensitive LED panels. The system must operate with extreme precision around delicate circuitry while maintaining high-speed performance.
+**GantryMate-200** addresses the challenge of automating the precise handling of **~280 miniature screws (1 mm size)** on sensitive LED panels. The system must operate with extreme precision around delicate circuitry while maintaining high-speed performance.
 
 ## Our Soultion
 
